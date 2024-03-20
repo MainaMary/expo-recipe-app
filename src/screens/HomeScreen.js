@@ -1,24 +1,49 @@
-import { View, Text, StatusBar, SafeAreaView, TextInput } from 'react-native'
+import { View, Text, StatusBar, SafeAreaView, TextInput ,Image} from 'react-native'
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { MagnifyingGlassIcon, AdjustmentsHorizontalIcon } from 'react-native-heroicons/outline'
 import { ScrollView } from 'react-native-reanimated'
 import { heightPercentageToDP } from 'react-native-responsive-screen'
-import Categories from '../components/Categories'
+import {Category} from '../components/Category.js'
+import {axiosInstance, CATEGORIES, FILTER} from '../libs/axios.ts'
+
 export default function HomeScreen() {
-  const [isCategoryActive, setIsCategoryActive] = useState(false)
+  const [isCategoryActive, setIsCategoryActive] = useState('chicken')
   const[categories, setCategories] = useState([])
   const [meals, setMeals] = useState([])
 
   useEffect(() =>{
-    const handleGetRecipes =() =>{
+  const handleGetRecipes =async (category ='chicken') =>{
+      try{
+        const response = await axiosInstance(`${FILTER}?i=${category}`)
+         
+      }
+      catch(error){
+       console.log(error.message)
+      }
 
     }
-    const handleGetCategories =() =>{}
-   handleGetCategories()
+    const handleGetCategories =async () =>{
+      try{
+        const response = await axiosInstance(CATEGORIES)
+         if(response){
+            setCategories(response?.data?.categories)
+            console.log(response?.data?.categories)
+          }
+      }
+      catch(error){
+        console.log(error.message)
+      }
+    }
+  handleGetCategories()
+  handleGetRecipes()
   },[])
-  const handleCategory = () =>{
-
+   const handleCategoryChange =(category) =>{
+  
+   handleGetRecipes(category)
+   setIsCategoryActive(category)
   }
+   
   return (
     <View className="flex-1 bg-white">
       <StatusBar style="dark" />
@@ -68,7 +93,7 @@ export default function HomeScreen() {
           </View>
           {/* Categories */}
           <View>
-            <Categories isCategoryActive={isCategory} handleCategory={handleCategory}/>
+            <Category isCategoryActive={isCategoryActive} handleCategory={handleCategoryChange} categories={categories}/>
           </View>
         </ScrollView>
       </SafeAreaView>
