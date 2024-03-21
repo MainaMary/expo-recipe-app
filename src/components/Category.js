@@ -1,9 +1,8 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
 import React from 'react'
-import { ScrollView } from 'react-native-reanimated'
-import { heightPercentageToDP } from 'react-native-responsive-screen'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 
-export default function Category({categories, isCategoryActive, handleCategory }) {
+function Category({categories, isCategoryActive, handleCategoryChange }) {
   return (
     <View>
       <ScrollView horizontal
@@ -16,15 +15,17 @@ export default function Category({categories, isCategoryActive, handleCategory }
         {categories?.map((category, index) => <TouchableOpacity
           className="flex items-center space-y-1"
           key={index}>
-          <View className ={ category.strCategory === isCategoryActive ? "bg-orange rounded-xl" :"rounded-xl bg white"}>
+          <View 
+           onPress ={() => handleCategoryChange(category?.strCategory)}
+          className ={ category.strCategory === isCategoryActive ? "bg-orange rounded-xl" :"rounded-xl bg white"}>
             <Image
-            onPress ={() => handleCategory(category?.strCategory)}
+           
               source={{
                 uri: category.strCategoryThumb
               }}
               style={{
-                width: heightPercentageToDP(5),
-                height: heightPercentageToDP(5)
+                width: hp(5),
+                height: hp(5)
               }}
             />
           </View>
@@ -39,3 +40,4 @@ export default function Category({categories, isCategoryActive, handleCategory }
     </View>
   )
 }
+export default Category
