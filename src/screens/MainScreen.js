@@ -26,7 +26,13 @@ export default function MainScreen() {
         <TouchableOpacity
         onPress={() =>{navigation.navigate("Home")}}
         style={{backgroundColor: "orange", padding: 10, borderRadius: 5, marginTop: 20}}>
-          <Text  className="px-3 py-2 text-base font-semibold" style={{color: "white", textAlign: "center"}}>Click to get started</Text>
+          <Text  
+          
+          className="px-3 py-2 text-base font-semibold" style={{
+            //  padding:"2px 3px",
+            // fontSize:"16px",
+            // fontWeight:"semibold",
+            color: "white", textAlign: "center"}}>Click to get started</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>

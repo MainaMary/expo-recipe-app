@@ -1,64 +1,100 @@
-import { View, Text, StatusBar, SafeAreaView, TextInput ,Image} from 'react-native'
+import { View, Text, StatusBar, SafeAreaView, TextInput, Image, StyleSheet, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { MagnifyingGlassIcon, AdjustmentsHorizontalIcon } from 'react-native-heroicons/outline'
-import { ScrollView } from 'react-native-reanimated'
 import { heightPercentageToDP } from 'react-native-responsive-screen'
-import {Category} from '../components/Category.js'
-import {axiosInstance, CATEGORIES, FILTER} from '../libs/axios.ts'
+import { Feather,Entypo  } from '@expo/vector-icons';
+import Category from '../components/Category.js'
+import { axiosInstance, CATEGORIES, FILTER } from '../libs/axios.js'
+import Meals from '../components/Meals.js'
 
+const styles = StyleSheet.create({
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
+  searchWrapper:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10
+  },
+  input:{
+    flex:1,
+    fontSize: 14
+  },
+  icon:{
+    marginRight:10
+  },
+  categories:{
+    marginTop: 10,
+    marginBottom: 10
+  }
+})
 export default function HomeScreen() {
   const [isCategoryActive, setIsCategoryActive] = useState('chicken')
-  const[categories, setCategories] = useState([])
+  const [categories, setCategories] = useState([])
   const [meals, setMeals] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
 
-  useEffect(() =>{
-  const handleGetRecipes =async (category ='chicken') =>{
-      try{
+  useEffect(() => {
+    const handleGetRecipes = async (category = 'chicken') => {
+      try {
         const response = await axiosInstance(`${FILTER}?i=${category}`)
-         
+        if (response && response.data) {
+        setMeals(response.data.meals);
       }
-      catch(error){
-       console.log(error.message)
+
+      }
+      catch (error) {
+        console.log(error.message)
       }
 
     }
-    const handleGetCategories =async () =>{
-      try{
+    const handleGetCategories = async () => {
+      try {
         const response = await axiosInstance(CATEGORIES)
-         if(response){
-            setCategories(response?.data?.categories)
-            console.log(response?.data?.categories)
-          }
+        if (response) {
+          setCategories(response?.data?.categories)
+          
+        }
       }
-      catch(error){
+      catch (error) {
         console.log(error.message)
       }
     }
-  handleGetCategories()
-  handleGetRecipes()
-  },[])
-   const handleCategoryChange =(category) =>{
-  
-   handleGetRecipes(category)
-   setIsCategoryActive(category)
+    handleGetCategories()
+    handleGetRecipes()
+  }, [])
+  const handleCategoryChange = (category) => {
+    console.log('Hello world')
+   console.log({category})
+    handleGetRecipes(category)
+    setIsCategoryActive(category)
   }
-   
+
   return (
-    <View className="flex-1 bg-white">
+    <View style={styles.container}>
       <StatusBar style="dark" />
       <SafeAreaView>
         <ScrollView showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}
           className="pt-12"
         >
-          <View className="mx-4 flex-row justify-between items-center">
-            <AdjustmentsHorizontalIcon size={16} />
-            <Image source={'../../assets/images/profile-photo.jpg'}
-              className="rounded-full"
+          <View className="mx-4 flex-row justify-between items-center" style={styles.header}>
+            <Entypo name="menu" size={26} color="black" />
+            <Image source={require('../../assets/images/profile-photo.jpg')}
+
               style={{
                 width: heightPercentageToDP(5),
-                height: heightPercentageToDP(5)
+                height: heightPercentageToDP(5),
+                borderRadius: 50
               }} />
           </View>
           <View className="mx-4 mb-2 space-y-1">
@@ -73,27 +109,33 @@ export default function HomeScreen() {
             <Text style={{
               fontSize: heightPercentageToDP(3)
             }}
-            className="font-semibold"
+              className="font-semibold"
             >
-              Food you <Text className="text-orange">Love</Text>
+              Food you <Text style={{
+                color: 'orange',
+                fontWeight: 'semibold'
+              }}>Love</Text>
             </Text>
           </View>
           {/* Search bar */}
-          <View className="flex mx-4 items-center border rounded-xl border-black p-[6px]">
-            <View className="bg-white rounded-full p-2">
-              <MagnifyingGlassIcon size={heightPercentageToDP(5)} strokeWidth={4}/>
-            </View>
-            <TextInput placeholder='Search your favourite'
-            placeholderTextColor={"gray"}
-            className="flex-1 text-base mb-1 pl-1 tracking-widest"
-            style={{
-              fontSize: heightPercentageToDP(1.8)
-            }}
+          <View style={styles.searchWrapper}>
+            <Feather name="search" size={18} color="gray" style={styles.icon} />
+            <TextInput
+              placeholderTextColor={"gray"}
+              placeholder="Search your favourite.."
+              style={styles.input}
+              value={searchTerm}
+              onChangeText={text => setSearchTerm(text)}
             />
           </View>
+          
           {/* Categories */}
+          <View style={styles.categories}>
+            <Category isCategoryActive={isCategoryActive} handleCategoryChange={handleCategoryChange} categories={categories}/>
+          </View>
+          {/* Meals */}
           <View>
-            <Category isCategoryActive={isCategoryActive} handleCategory={handleCategoryChange} categories={categories}/>
+            <Meals meals={meals} categories={categories}/>
           </View>
         </ScrollView>
       </SafeAreaView>
