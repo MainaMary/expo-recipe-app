@@ -38,13 +38,11 @@ const styles = StyleSheet.create({
   }
 })
 export default function HomeScreen() {
-  const [isCategoryActive, setIsCategoryActive] = useState('chicken')
+  const [isCategoryActive, setIsCategoryActive] = useState('')
   const [categories, setCategories] = useState([])
   const [meals, setMeals] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
-
-  useEffect(() => {
-    const handleGetRecipes = async (category = 'chicken') => {
+ const handleGetRecipes = async (category = 'Chicken') => {
       try {
         const response = await axiosInstance(`${FILTER}?i=${category}`)
         if (response && response.data) {
@@ -69,14 +67,17 @@ export default function HomeScreen() {
         console.log(error.message)
       }
     }
+  useEffect(() => {
     handleGetCategories()
     handleGetRecipes()
   }, [])
+  
   const handleCategoryChange = (category) => {
     console.log('Hello world')
-   console.log({category})
-    handleGetRecipes(category)
+   console.log({clicked: category})
     setIsCategoryActive(category)
+    handleGetRecipes(category)
+   
   }
 
   return (

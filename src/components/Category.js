@@ -12,14 +12,20 @@ function Category({categories, isCategoryActive, handleCategoryChange }) {
           paddingHorizontal: 15
         }}
       >
-        {categories?.map((category, index) => <TouchableOpacity
+        {categories?.map((category, index) => {
+          console.log({category})
+          return(
+             <TouchableOpacity
           className="flex items-center space-y-1"
-          key={index}>
+          key={index}
+           onPress ={() => handleCategoryChange(category?.strCategory)}>
           <View 
-           onPress ={() => handleCategoryChange(category?.strCategory)}
-          className ={ category.strCategory === isCategoryActive ? "bg-orange rounded-xl" :"rounded-xl bg white"}>
+          
+           style={{backgroundColor : category.strCategory == isCategoryActive ? 'orange':'',
+           borderRadius: 10
+           }}
+          className ={ category.strCategory == isCategoryActive ? "bg-orange rounded-xl" :"rounded-xl bg white"}>
             <Image
-           
               source={{
                 uri: category.strCategoryThumb
               }}
@@ -34,7 +40,10 @@ function Category({categories, isCategoryActive, handleCategoryChange }) {
           fontSize: hp(1.4)
          }}
          className="text-neutral-900">{category.strCategory}</Text>
-        </TouchableOpacity>)}
+        </TouchableOpacity>
+          )
+        }
+       )}
       </ScrollView>
       <Text>Categories</Text>
     </View>
