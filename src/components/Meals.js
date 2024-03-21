@@ -31,7 +31,7 @@ function Meals({ meals, categories }) {
         }}
         className="font-semibold text-neutral-600"
       >
-        {meals.length} Recipes
+        {meals?.length} Recipes
       </Text>
 
       <Animated.View
@@ -41,11 +41,11 @@ function Meals({ meals, categories }) {
           <Loader size="large" className="mt-20" />
         ) : (
           <View style={styles.container}>
-            {meals.map((meal, index) => (
+            {meals?.map((meal, index) => (
               <View style={styles.row} key={index}>
                 <MealCard meal={meal} />
                 {/* Render another MealCard if it exists */}
-                {meals[index + 1] && <MealCard meal={meals[index + 1]} />}
+                {meals?.length > 0 && <MealCard meal={meals[index + 1]} />}
               </View>
             ))}
           </View>
