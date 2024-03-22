@@ -8,24 +8,23 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    
+    flexDirection: "column",
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
   },
-  loader:{
+  loader: {
     marginTop: 20,
-    marginBottom:20,
-    textAlign:'center'
-  }
+    marginBottom: 20,
+    textAlign: "center",
+  },
 });
-function Meals({ meals, isLoading, recipeError }) {
+function Meals({ meals, isLoading, recipeError, isSearchActive, searchTerm }) {
   const navigation = useNavigation();
-  if(recipeError){
-    <Text>{recipeError}</Text>
+  if (recipeError) {
+    <Text>{recipeError}</Text>;
   }
 
   return (
@@ -33,19 +32,22 @@ function Meals({ meals, isLoading, recipeError }) {
       className="mx-4  space-y-4"
       entering={FadeInDown.delay(200).duration(700).springify().damping(12)}
     >
-      {meals?.length > 0 && 
-       <Text
-        style={{
-          fontSize: hp(2),
-        }}
-        className="font-semibold text-neutral-600"
-      >
-        {meals?.length} Recipes
-      </Text>
-      }
-     
+      {meals?.length > 0 && !isSearchActive ? (
+        <Text
+          style={{
+            fontSize: hp(2),
+          }}
+          className="font-semibold text-neutral-600"
+        >
+          {meals?.length} Recipes
+        </Text>
+      ) : isSearchActive && meals?.length > 0 ? (
+        <Text>{`Search results for letter ${searchTerm}`}</Text>
+      ) : (
+        <Text>No results found!</Text>
+      )}
 
-     <Animated.View
+      <Animated.View
         entering={FadeInDown.delay(200).duration(700).springify().damping(12)}
       >
         {isLoading ? (
@@ -56,12 +58,16 @@ function Meals({ meals, isLoading, recipeError }) {
               <View style={styles.row} key={index}>
                 <MealCard meal={meal} />
                 {/* Render another MealCard if it exists */}
-                {index < meals.length - 1 && <MealCard meal={meals[index + 1]} />}
+                {index < meals.length - 1 && (
+                  <MealCard meal={meals[index + 1]} />
+                )}
               </View>
             ))}
           </View>
         ) : (
-          <Text style={styles.noDataText}>No data found in this category. Please try again</Text>
+          <Text style={styles.noDataText}>
+            No data found in this category. Please try again
+          </Text>
         )}
       </Animated.View>
     </Animated.View>
