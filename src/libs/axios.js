@@ -9,6 +9,6 @@ export const axiosInstance = axios.create({
 export const API_ROUTES = {
   FILTER: `filter.php`,
   CATEGORIES: "categories.php",
-  SEARCH: "search.php?s=Arrabiata",
+  SEARCH: "search.php",
 };
 export const { CATEGORIES, FILTER } = API_ROUTES;
