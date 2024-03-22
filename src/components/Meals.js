@@ -16,16 +16,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
+  loader:{
+    marginTop: 20,
+    marginBottom:20,
+    textAlign:'center'
+  }
 });
-function Meals({ meals, categories }) {
+function Meals({ meals, isLoading, recipeError }) {
   const navigation = useNavigation();
+  if(recipeError){
+    <Text>{recipeError}</Text>
+  }
 
   return (
     <Animated.View
       className="mx-4  space-y-4"
       entering={FadeInDown.delay(200).duration(700).springify().damping(12)}
     >
-      <Text
+      {meals?.length > 0 && 
+       <Text
         style={{
           fontSize: hp(2),
         }}
@@ -33,22 +42,26 @@ function Meals({ meals, categories }) {
       >
         {meals?.length} Recipes
       </Text>
+      }
+     
 
-      <Animated.View
+     <Animated.View
         entering={FadeInDown.delay(200).duration(700).springify().damping(12)}
       >
-        {categories?.length == 0 || meals?.length == 0 ? (
-          <Loader size="large" className="mt-20" />
-        ) : (
+        {isLoading ? (
+          <Loader size="large" style={styles.loader} />
+        ) : meals?.length > 0 ? (
           <View style={styles.container}>
-            {meals?.map((meal, index) => (
+            {meals.map((meal, index) => (
               <View style={styles.row} key={index}>
                 <MealCard meal={meal} />
                 {/* Render another MealCard if it exists */}
-                {meals?.length > 0 && <MealCard meal={meals[index + 1]} />}
+                {index < meals.length - 1 && <MealCard meal={meals[index + 1]} />}
               </View>
             ))}
           </View>
+        ) : (
+          <Text style={styles.noDataText}>No data found in this category. Please try again</Text>
         )}
       </Animated.View>
     </Animated.View>
