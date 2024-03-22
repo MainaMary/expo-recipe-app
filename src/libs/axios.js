@@ -10,5 +10,6 @@ export const API_ROUTES = {
   FILTER: `filter.php`,
   CATEGORIES: "categories.php",
   SEARCH: "search.php",
+  LOOKUP: "lookup.php",
 };
-export const { CATEGORIES, FILTER } = API_ROUTES;
+export const { CATEGORIES, FILTER, SEARCH, LOOKUP } = API_ROUTES;
