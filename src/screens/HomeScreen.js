@@ -66,6 +66,7 @@ export default function HomeScreen() {
   const [isCategoryLoading, setIsCategoryLoading] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const searchInputRef = useRef(null);
+
   const handleGetRecipes = async (category = "Beef") => {
     setIsLoading(true);
     setIsSearchActive(false);
@@ -139,7 +140,7 @@ export default function HomeScreen() {
                   fontSize: heightPercentageToDP(3),
                 }}
               >
-                Fast & Delicacies
+                Your favourite Delicacies
               </Text>
             </View>
             <Text

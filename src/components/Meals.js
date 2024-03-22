@@ -41,10 +41,10 @@ function Meals({ meals, isLoading, recipeError, isSearchActive, searchTerm }) {
         >
           {meals?.length} Recipes
         </Text>
-      ) : isSearchActive && meals?.length > 0 ? (
+      ) : isSearchActive ? (
         <Text>{`Search results for letter ${searchTerm}`}</Text>
       ) : (
-        <Text>No results found!</Text>
+        ""
       )}
 
       <Animated.View
