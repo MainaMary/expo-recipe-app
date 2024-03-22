@@ -1,10 +1,11 @@
 import { View, Text, StatusBar, SafeAreaView, TextInput, Image, StyleSheet, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { heightPercentageToDP } from 'react-native-responsive-screen'
-import { Feather,Entypo  } from '@expo/vector-icons';
+import { Feather  } from '@expo/vector-icons';
 import Category from '../components/Category.js'
 import { axiosInstance, CATEGORIES, FILTER } from '../libs/axios.js'
 import Meals from '../components/Meals.js'
+import Header from '../components/Header.js';
 
 const styles = StyleSheet.create({
   header: {
@@ -38,11 +39,15 @@ const styles = StyleSheet.create({
   }
 })
 export default function HomeScreen() {
-  const [isCategoryActive, setIsCategoryActive] = useState('')
+  const [isCategoryActive, setIsCategoryActive] = useState('Beef')
   const [categories, setCategories] = useState([])
   const [meals, setMeals] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
- const handleGetRecipes = async (category = 'Chicken') => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [recipeError, setRecipeError] = useState('')
+  const [isCategoryLoading, setIsCategoryLoading] = useState(false)
+ const handleGetRecipes = async (category = 'Beef') => {
+  setIsLoading(true)
       try {
         const response = await axiosInstance(`${FILTER}?i=${category}`)
         if (response && response.data) {
@@ -52,10 +57,15 @@ export default function HomeScreen() {
       }
       catch (error) {
         console.log(error.message)
+      }finally{
+        setIsLoading(false)
       }
+       
+      
 
-    }
+  }
     const handleGetCategories = async () => {
+      setIsCategoryLoading(true)
       try {
         const response = await axiosInstance(CATEGORIES)
         if (response) {
@@ -65,6 +75,9 @@ export default function HomeScreen() {
       }
       catch (error) {
         console.log(error.message)
+        setRecipeError(error.message)
+      }finally{
+        setIsCategoryLoading(false)
       }
     }
   useEffect(() => {
@@ -73,11 +86,20 @@ export default function HomeScreen() {
   }, [])
   
   const handleCategoryChange = (category) => {
-    console.log('Hello world')
-   console.log({clicked: category})
     setIsCategoryActive(category)
     handleGetRecipes(category)
    
+  }
+  const handleSearch = async () =>{
+    try{
+      const response = await axiosInstance(`${SEARCH}?s=${searchTerm}`)
+       if (response && response.data) {
+        setMeals(response.data.meals);
+      }
+    }
+    catch(error){
+      throw new Error()
+    }
   }
 
   return (
@@ -88,16 +110,7 @@ export default function HomeScreen() {
           contentContainerStyle={{ paddingBottom: 20 }}
           className="pt-12"
         >
-          <View className="mx-4 flex-row justify-between items-center" style={styles.header}>
-            <Entypo name="menu" size={26} color="black" />
-            <Image source={require('../../assets/images/profile-photo.jpg')}
-
-              style={{
-                width: heightPercentageToDP(5),
-                height: heightPercentageToDP(5),
-                borderRadius: 50
-              }} />
-          </View>
+          <Header/>
           <View className="mx-4 mb-2 space-y-1">
             <View>
               <Text
@@ -119,7 +132,8 @@ export default function HomeScreen() {
             </Text>
           </View>
           {/* Search bar */}
-          <View style={styles.searchWrapper}>
+          
+            <View style={styles.searchWrapper}>
             <Feather name="search" size={18} color="gray" style={styles.icon} />
             <TextInput
               placeholderTextColor={"gray"}
@@ -127,21 +141,22 @@ export default function HomeScreen() {
               style={styles.input}
               value={searchTerm}
               onChangeText={text => setSearchTerm(text)}
+              onSubmitEditing={handleSearch}
             />
           </View>
+         
+          
           
           {/* Categories */}
           <View style={styles.categories}>
-            <Category isCategoryActive={isCategoryActive} handleCategoryChange={handleCategoryChange} categories={categories}/>
+            <Category isCategoryActive={isCategoryActive} handleCategoryChange={handleCategoryChange} categories={categories} isCategoryLoading={isCategoryLoading}/>
           </View>
           {/* Meals */}
           <View>
-            <Meals meals={meals} categories={categories}/>
+            <Meals meals={meals} isLoading={isLoading} recipeError={recipeError}/>
           </View>
         </ScrollView>
       </SafeAreaView>
-
-      <Text>HomeScreen</Text>
     </View>
   )
 }
